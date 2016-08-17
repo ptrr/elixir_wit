@@ -106,6 +106,12 @@ defmodule Wit do
     {:ok, context}
   end
 
+  defp run_action(_access_token, _session_id, _module, context, %Converse{type: "value"}, _max_steps) do
+    Logger.debug "Got converse type \"value\""
+    context = apply(module, :call_action, [resp.action, session_id, context])
+    run_actions(access_token, session_id, module, "", context, max_steps)
+  end
+
   defp run_action(:error, session_id, module, context, error) do
     Logger.debug "Calling the error handler"
     apply(module, :call_action, ["error", session_id, context, error])
